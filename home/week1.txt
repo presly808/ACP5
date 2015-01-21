@@ -1,0 +1,50 @@
+1.  Repeat material
+       OOP(Inheritance, Encapsulation, Polymorphism, Abstraction)
+
+       Collections in java
+              discover all interfaces - read about each method
+
+       static
+       final (Immutable class)
+       Generics, Exceptions
+       Comparable, Comparator
+
+       SOLID principles
+       Design pattern (Iterator, Strategy)
+
+       good resource for visualizing data structures and algorithms
+       http://www.cs.usfca.edu/~galles/visualization/Algorithms.html
+       http://visualgo.net/
+
+2. Implement binary search algorithm
+
+3. Implement BinarySearchTree
+    methods
+    - add
+    - traverse
+    - findMin
+    - findMax
+    - delete
+
+    * tree optimization
+        * rotate right
+        * rotate left
+    * implement iterator
+
+4. Write own implementation of HasSet (Just implement interface Set and write all methods)
+
+Literature
+
+    "Head First Java" - Basics of Java with a lot of pictures and interesting tasks
+    "Head First Design Pattern" - about design patterns
+
+    Next books contains different situations that help to deep understand Java
+    "Philosophy of Java"
+    "Effective Java" - Rules of using of java
+    "OCA/OCP Java SE 7 Programmer I & II Study Guide" - preparing to oracle exams
+
+    Reference books
+
+    "Core Java 2: Volume I–Fundamentals  Cay S. Horstmann
+    "Core Java 2: Volume II—Advanced Features  Cay S. Horstmann
+    Java. The Complete Reference. Herbert Schildt
