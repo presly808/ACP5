@@ -5,6 +5,7 @@ public class HelloWord {
 
     public static void main(String[] args) {
         System.out.println("Serhii");
+        //TODO label for test
     }
 
 }
