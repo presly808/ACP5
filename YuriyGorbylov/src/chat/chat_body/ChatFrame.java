@@ -25,20 +25,25 @@ public class ChatFrame extends JFrame {
 
 
     public ChatFrame(String title, ChatPacket chatPacket) throws HeadlessException {
-        this.chatPacket = chatPacket;
+        super(title);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setVisible(true);
         setSize(800, 500);
         setResizable(false);
-        init();
-    }
-
-    private void init(){
         try {
+            init();
+            chatPacket.setOutputTextArea(outputTextArea);
+            chatPacket.setInputTextArea(inputTextArea);
             chatClient = new ChatClient(chatPacket);
+            chatClient.readMessage();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+    }
+
+    private void init() throws IOException {
+
 
         /* INPUT TEXT AREA */
         inputTextArea = doTextArea(600,390);

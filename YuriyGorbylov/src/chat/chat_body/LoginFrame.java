@@ -14,6 +14,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.IOException;
+import java.net.ServerSocket;
 
 /**
  * Created by yuriy.gorbylev on 04.02.2015.
@@ -26,7 +27,6 @@ public class LoginFrame extends JFrame{
     private JRadioButton clientRadioButton;
     private JRadioButton serverRadioButton;
     private JButton startButton;
-    private boolean startIsPressed = false;
 
     public LoginFrame(String title) throws HeadlessException {
         super(title);
@@ -140,21 +140,17 @@ public class LoginFrame extends JFrame{
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            Thread chatThread = new Thread(new ChatServer());
+
             if (serverRadioButton.isSelected()){
-                startIsPressed = !startIsPressed;
-                if (startIsPressed){
-                    chatThread.start();
-                    setTitle("Server has been started");
-                    startButton.setText("Stop");
-
-                } else{
-                    chatThread.interrupt();
-                    startButton.setText("Start");
-                    setTitle("Server has been closed");
+                setTitle("Server has been started");
+                ChatServer server = new ChatServer();
+                try {
+                    server.start();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
                 }
-
-            } else {
+                startButton.setText("Stop");
+            } else if (clientRadioButton.isSelected()){
                 boolean ipValid = new IPValidator().validate(ipTextField.getText());
                 boolean portValid = new PortValidator().validate(portTextField.getText());
                 boolean nickValid = new NickValidator().validate(nickTextField.getText());
@@ -168,7 +164,6 @@ public class LoginFrame extends JFrame{
                     ChatPacket chatPacket = new ChatPacket(ipTextField.getText(), portTextField.getText(), nickTextField.getText());
                     setVisible(false);
                     new ChatFrame("Chat", chatPacket);
-                    dispose();
                 }
 
             }

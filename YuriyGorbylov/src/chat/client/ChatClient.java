@@ -4,34 +4,48 @@ package chat.client;
  * Created by yuriy.gorbylev on 04.02.2015.
  */
 
-import java.io.IOException;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
+import java.util.Scanner;
 
 public class ChatClient {
 
     private ChatPacket chatPacket;
     private Socket socket;
+    private ObjectOutputStream ous;
+    private Scanner in;
 
     public ChatClient(ChatPacket chatPacket) throws IOException {
         this.chatPacket = chatPacket;
-        Socket socket = new Socket(chatPacket.getIp(), Integer.valueOf(chatPacket.getPort()));
+        this.socket = new Socket(chatPacket.getIp(), Integer.valueOf(chatPacket.getPort()));
+        in = new Scanner(socket.getInputStream());
+        OutputStream fos = socket.getOutputStream();
+        ous = new ObjectOutputStream(fos);
+        ous.writeObject(chatPacket);
+        ous.flush();
     }
 
     public void sendMessage(String message) throws IOException {
 
-        PrintWriter out = new PrintWriter(socket.getOutputStream());
-        String text = " " + chatPacket.getNick() + ": " + message;
-        out.println(text);
-        out.flush();
+
     }
 
     public void readMessage(){
 
-        Thread read = new Thread(new ReadRunner(socket));
+        Thread read = new Thread(new ReadRunner());
         read.start();
+    }
+
+
+    private class ReadRunner implements Runnable{
+
+        @Override
+        public void run() {
+            while (in.hasNextLine()) {
+                System.out.println(in.nextLine());
+                chatPacket.getInputTextArea().append(in.nextLine());
+            }
+        }
     }
 }
 

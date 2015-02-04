@@ -1,41 +1,35 @@
 package chat.server;
 
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-        import java.util.List;
+import java.util.List;
 
 /**
  * Created by yuriy.gorbylev on 02.02.2015.
  */
-public class ChatServer implements Runnable{
+public class ChatServer{
 
-    public static final int PORT = 49001;
-    public static final String IP = "10.131.0.97";
-    private List<ChatConnection> connections = new ArrayList<>();
+    public final int PORT = 33333;
 
-    @Override
-    public void run() {
-        ServerSocket ss = null;
-        try {
-            ss = new ServerSocket(PORT);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void start() throws IOException {
 
-        while(true){
+        List<ChatConnection> connections = new ArrayList();
+        ServerSocket ss = new ServerSocket(PORT);
+
+        while(true) {
+
             try {
-
                 Socket clientSocket = ss.accept();
                 ChatConnection connection = new ChatConnection(clientSocket, connections);
                 connections.add(connection);
                 new Thread(connection).start();
-
             } catch (IOException e) {
+                System.out.println("SERVER DOES NOT WORK");
                 e.printStackTrace();
             }
-
         }
     }
 }
