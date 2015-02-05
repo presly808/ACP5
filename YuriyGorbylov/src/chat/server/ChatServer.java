@@ -20,7 +20,6 @@ public class ChatServer{
         ServerSocket ss = new ServerSocket(PORT);
 
         while(true) {
-
             try {
                 Socket clientSocket = ss.accept();
                 ChatConnection connection = new ChatConnection(clientSocket, connections);

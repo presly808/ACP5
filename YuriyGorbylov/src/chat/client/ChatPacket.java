@@ -11,29 +11,11 @@ public class ChatPacket implements Serializable{
     private String ip;
     private String port;
     private String nick;
-    private JTextArea outputTextArea;
-    private JTextArea inputTextArea;
 
     public ChatPacket(String ip, String port, String nick) {
         this.ip = ip;
         this.port = port;
         this.nick = nick;
-    }
-
-    public JTextArea getOutputTextArea() {
-        return outputTextArea;
-    }
-
-    public void setOutputTextArea(JTextArea outputTextArea) {
-        this.outputTextArea = outputTextArea;
-    }
-
-    public JTextArea getInputTextArea() {
-        return inputTextArea;
-    }
-
-    public void setInputTextArea(JTextArea inputTextArea) {
-        this.inputTextArea = inputTextArea;
     }
 
     public String getIp() {

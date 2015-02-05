@@ -6,7 +6,12 @@ import chat.client.ChatPacket;
 import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 /**
  * Created by yuriy.gorbylev on 04.02.2015.
@@ -26,23 +31,17 @@ public class ChatFrame extends JFrame {
 
     public ChatFrame(String title, ChatPacket chatPacket) throws HeadlessException {
         super(title);
+        this.chatPacket = chatPacket;
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setVisible(true);
         setSize(800, 500);
         setResizable(false);
-        try {
-            init();
-            chatPacket.setOutputTextArea(outputTextArea);
-            chatPacket.setInputTextArea(inputTextArea);
-            chatClient = new ChatClient(chatPacket);
-            chatClient.readMessage();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        init();
+        connectToServer();
 
     }
 
-    private void init() throws IOException {
+    private void init(){
 
 
         /* INPUT TEXT AREA */
@@ -60,6 +59,7 @@ public class ChatFrame extends JFrame {
 
         /* SEND BUTTON */
         sendButton = new JButton("Send");
+        sendButton.addActionListener(new SendButtonActionListener());
 
         /* PANELS */
 
@@ -105,5 +105,44 @@ public class ChatFrame extends JFrame {
         list.setBackground(BACKGROUND_COLOR);
         list.setPreferredSize(new Dimension(width, height));
         return list;
+    }
+
+    private void connectToServer(){
+        try {
+            chatClient = new ChatClient(chatPacket, inputTextArea, outputTextArea);
+            chatClient.readMessages();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private class SendButtonActionListener implements ActionListener{
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            try {
+                String message = outputTextArea.getText();
+                chatClient.sendMessage(message);
+                outputTextArea.setText("");
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+        }
+    }
+
+    private class SendTextActionListener extends KeyAdapter{
+        @Override
+        public void keyPressed(KeyEvent e) {
+            final int KEY_ENTER = 10;
+            if (e.getKeyCode() == KEY_ENTER){
+                try {
+                    String message = outputTextArea.getText();
+                    chatClient.sendMessage(message);
+                    outputTextArea.setText("");
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        }
     }
 }
