@@ -34,7 +34,8 @@ public class ChatConnection implements Runnable {
             ObjectInputStream ois = new ObjectInputStream(clientSocket.getInputStream());
             ChatPacket packet = (ChatPacket) ois.readObject();
             SimpleDateFormat date = new SimpleDateFormat("HH:mm:ss: ");
-            String connectingMessage = date.format(new Date()) + packet.getNick() + ". IP: " +  packet.getIp() + ". Has just connected.";
+            String connectingMessage = date.format(new Date()) + packet.getNick() + ". IP: " +
+                    clientSocket.getInetAddress().getHostAddress() + ". Has just connected.";
             System.out.println(connectingMessage);
             out = new PrintWriter(clientSocket.getOutputStream());
             for (ChatConnection connection : connections){              // Отправялю всем соединениям то, что получил сервер
