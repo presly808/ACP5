@@ -10,6 +10,10 @@ public class IPValidator implements TextFieldValidator {
             return false;
         }
 
+        if (ip.equals("localhost")){
+            return true;
+        }
+
         String[] parts = ip.split("\\.");
         if (parts.length != 4){
             return false;

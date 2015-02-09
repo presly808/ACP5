@@ -1,8 +1,14 @@
 package chat.server;
 
+import chat.client.ChatPacket;
+
 import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
@@ -12,34 +18,48 @@ import java.util.Scanner;
 public class ChatConnection implements Runnable {
 
     private Socket clientSocket;
-    private Scanner in;
     private PrintWriter out;
-    List<ChatConnection> connections;
+    private Scanner in;
+    private List<ChatConnection> connections;
 
-    public ChatConnection(Socket socket, List connections) {
-        this.clientSocket = socket;
+    public ChatConnection(Socket clientSocket, List connections) {
+        this.clientSocket = clientSocket;
         this.connections = connections;
-        try {
-            in = new Scanner(socket.getInputStream());
-            out = new PrintWriter(socket.getOutputStream(), true);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
     public void run() {
 
-        System.out.printf("Address = %s\n", clientSocket.getInetAddress().toString());
-        out.println("Welcome to CHAT!");
-
-        while(in.hasNextLine()){
-            String message = in.nextLine();
-            System.out.println(message);
+        try {
+            ObjectInputStream ois = new ObjectInputStream(clientSocket.getInputStream());
+            ChatPacket packet = (ChatPacket) ois.readObject();
+            SimpleDateFormat date = new SimpleDateFormat("HH:mm:ss: ");
+            String connectingMessage = date.format(new Date()) + packet.getNick() + ". IP: " +
+                    clientSocket.getInetAddress().getHostAddress() + ". Has just connected.";
+            System.out.println(connectingMessage);
+            out = new PrintWriter(clientSocket.getOutputStream());
             for (ChatConnection connection : connections){              // Отправялю всем соединениям то, что получил сервер
-                connection.out.println(message);
+                connection.out.println(connectingMessage);
+                connection.out.flush();
             }
+
+            in = new Scanner(clientSocket.getInputStream());
+            while(in.hasNextLine()){
+                String message = in.nextLine();
+                System.out.println(message);
+                for (ChatConnection connection : connections){              // Отправялю всем соединениям то, что получил сервер
+                    connection.out.println(message);
+                    connection.out.flush();
+                }
+            }
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
+
     }
 }
 

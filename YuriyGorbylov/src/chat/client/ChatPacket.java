@@ -1,9 +1,12 @@
 package chat.client;
 
+import javax.swing.*;
+import java.io.Serializable;
+
 /**
  * Created by yuriy.gorbylev on 04.02.2015.
  */
-public class ChatPacket {
+public class ChatPacket implements Serializable{
 
     private String ip;
     private String port;
