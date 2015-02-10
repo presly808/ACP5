@@ -36,10 +36,10 @@ public class ChatFrame extends JFrame {
         super(title);
         this.chatPacket = chatPacket;
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setVisible(true);
         setSize(800, 500);
         setResizable(false);
         init();
+        setVisible(true);
         connectToServer();
     }
 
@@ -139,6 +139,9 @@ public class ChatFrame extends JFrame {
             chatClient = new ChatClient(chatPacket, inputTextArea, outputTextArea);
             chatClient.readMessages();
         } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Fail connection to the server", "Input error", JOptionPane.ERROR_MESSAGE);
+            this.dispose();
+            new LoginFrame("WELCOME!");
             e.printStackTrace();
         }
     }
@@ -160,10 +163,10 @@ public class ChatFrame extends JFrame {
     }
 
     private class SendTextKeyListener extends KeyAdapter{
+
         @Override
         public void keyPressed(KeyEvent e) {
-            final int KEY_ENTER = 10;
-            if (e.getKeyCode() == KEY_ENTER){
+            if (e.getKeyCode() == KeyEvent.VK_ENTER){
                 try {
                     String message = outputTextArea.getText();
                     chatClient.sendMessage(message);
