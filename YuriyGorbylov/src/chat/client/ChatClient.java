@@ -19,21 +19,20 @@ public class ChatClient {
     private ChatPacket chatPacket;
     private Socket socket;
     private ObjectInputStream in;
-    private PrintWriter out;
+    private ObjectOutputStream out;
 
     public ChatClient(ChatPacket chatPacket, JTextArea inputTextArea, JList userList) throws IOException {
         this.chatPacket = chatPacket;
         this.inputTextArea = inputTextArea;
         this.userList = userList;
         this.socket = new Socket(chatPacket.getIp(), Integer.valueOf(chatPacket.getPort()));
-        ObjectOutputStream ous = new ObjectOutputStream(socket.getOutputStream());
-        ous.writeObject(chatPacket);
-        ous.flush();
+        out = new ObjectOutputStream(socket.getOutputStream());
     }
 
     public void sendMessage(String message) throws IOException {
-        out = new PrintWriter(socket.getOutputStream());
-        out.println(chatPacket.getNick() + ": " + message);
+
+        chatPacket.setMessage(message);
+        out.writeObject(chatPacket);
         out.flush();
     }
 
@@ -48,9 +47,10 @@ public class ChatClient {
 
         @Override
         public void run() {
+
             try {
+                in = new ObjectInputStream(socket.getInputStream());
                 while(true){
-                    in = new ObjectInputStream(socket.getInputStream());
                     ServerPacket serverPacket = (ServerPacket) in.readObject();
                     inputTextArea.append(serverPacket.getMessage() + "\n");
                     List<String> list = serverPacket.getList();

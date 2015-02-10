@@ -20,49 +20,32 @@ public class TestDomParser {
         Document document = documentBuilder.parse(new File("YuriyGorbylov\\src\\week4\\day1\\xml\\users.xml"));
         Element root = document.getDocumentElement(); // Element = <root>
 
-        //System.out.printf("<%s>", root.getTagName());
-        //System.out.println();
 
-        NodeList nodeList = root.getChildNodes();
-        print(root);
+        System.out.println(print(root));
 
-        /*for (int i = 0; i < nodeList.getLength(); i++) {
-            Node node = nodeList.item(i);
-            if (node.getNodeType() == Node.ELEMENT_NODE){
-                Element element = (Element) node;
-                String id = element.getAttribute("id");
-                System.out.printf("<%s id=%s>%n", element.getTagName(), id);
-            }
-        }*/
-    }
-
-    public static void print(Element root){
-        NodeList nodeList = root.getChildNodes();
-        print(nodeList, "");
 
     }
-    public static void print(NodeList nodeList, String deep){
-        for (int i = 0; i < nodeList.getLength(); i++) {
-            Node node = nodeList.item(i);
-            if (node.getNodeType() == Node.ELEMENT_NODE){
-                Element element = (Element) node;
-                String id = element.getAttribute("id");
-                System.out.printf("%s<%s id=%s>%n", deep, element.getTagName(), id);
-            } else if (node.getNodeType() == Node.ATTRIBUTE_NODE){
-                Attribute attribute = (Attribute) node;
-                System.out.printf("%s<%s>%n", deep, attribute.getValue());
-            }else if (node.getNodeType() == Node.TEXT_NODE){
-                Text text = (Text) node;
-                System.out.printf("%s<%s>%n", deep, text.getWholeText());
-            }
-            if (node.getChildNodes() == null){
-                return;
-            } else{
-                deep = deep + "  ";
-                print(node.getChildNodes(), deep);
-            }
 
+    public static String print(Node curr){
+        if (!curr.hasChildNodes()){
+            return "";
+        }else{
+            NodeList nodeList = curr.getChildNodes();
+            String resStr = "";
+            for (int i = 0; i < nodeList.getLength(); i++) {
+                Node node = nodeList.item(i);
+                if (node.getNodeType() == Node.ELEMENT_NODE){
+                    Element element = (Element) node;
+                    resStr += String.format("<%s>%s</%s>", element.getTagName(), print(element), element.getTagName());
+                }else if (node.getNodeType() == Node.TEXT_NODE){
+                    Text textNode = (Text) node;
+                    String text = textNode.getTextContent();
+                    if (!text.isEmpty()){
+                        resStr += text;
+                    }
+                }
+            }
+            return resStr;
         }
-
     }
 }

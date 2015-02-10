@@ -147,7 +147,7 @@ public class LoginFrame extends JFrame{
                 JOptionPane.showMessageDialog(null, "Wrong nick name", "Input error", JOptionPane.ERROR_MESSAGE);
             } else{
                 ChatProperties.storeProperties(ipTextField.getText(), portTextField.getText(), nickTextField.getText());
-                ChatPacket chatPacket = new ChatPacket(ipTextField.getText(), portTextField.getText(), nickTextField.getText());
+                ChatPacket chatPacket = new ChatPacket(ipTextField.getText(), portTextField.getText(), nickTextField.getText(), null);
                 setVisible(false);
                 new ChatFrame("Chat", chatPacket);
             }

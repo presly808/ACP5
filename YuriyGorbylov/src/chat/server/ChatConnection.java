@@ -16,10 +16,13 @@ public class ChatConnection implements Runnable {
 
     private Socket clientSocket;
     private ObjectOutputStream out;
-    private Scanner in;
+    private ObjectInputStream in;
     private ServerPacket serverPacket;
+    private ChatPacket chatPacket;
     private List<String> users;
     private List<ChatConnection> connections;
+    private boolean isConnectingMessage = true;
+    private String message;
 
     public ChatConnection(Socket clientSocket, List<ChatConnection> connections, List<String> users) {
         this.clientSocket = clientSocket;
@@ -31,26 +34,25 @@ public class ChatConnection implements Runnable {
     public void run() {
 
         try {
-            ObjectInputStream ois = new ObjectInputStream(clientSocket.getInputStream());
-            ChatPacket packet = (ChatPacket) ois.readObject();
-            SimpleDateFormat date = new SimpleDateFormat("HH:mm:ss: ");
-            String connectingMessage = date.format(new Date()) + packet.getNick() + ". IP: " +
-                    clientSocket.getInetAddress().getHostAddress() + ". Has just connected.";
-            System.out.println(connectingMessage);
-            users.add(packet.getNick());
-
+            in = new ObjectInputStream(clientSocket.getInputStream());
             out = new ObjectOutputStream(clientSocket.getOutputStream());
-            serverPacket = new ServerPacket(connectingMessage, users);
-            for (ChatConnection connection : connections){              // Отправялю всем соединениям то, что получил сервер
-                connection.out.writeObject(serverPacket);
-                connection.out.flush();
-            }
 
-            in = new Scanner(clientSocket.getInputStream());
-            while(in.hasNextLine()){
-                String message = in.nextLine();
+            while(true){
+                chatPacket = (ChatPacket) in.readObject();
+
+                if (isConnectingMessage){
+                    SimpleDateFormat date = new SimpleDateFormat("HH:mm:ss: ");
+                    message = date.format(new Date()) + chatPacket.getNick() + ". IP: " +
+                            clientSocket.getInetAddress().getHostAddress() + ". Has just connected." + chatPacket.getMessage();
+                    isConnectingMessage = false;
+                }else{
+                    message = chatPacket.getMessage();
+                }
+
                 System.out.println(message);
-                for (ChatConnection connection : connections){              // Отправялю всем соединениям то, что получил сервер
+                users.add(chatPacket.getNick());
+                serverPacket = new ServerPacket(message, users);
+                for (ChatConnection connection : connections){
                     connection.out.writeObject(serverPacket);
                     connection.out.flush();
                 }

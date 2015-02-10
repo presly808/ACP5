@@ -11,11 +11,13 @@ public class ChatPacket implements Serializable{
     private String ip;
     private String port;
     private String nick;
+    private String message;
 
-    public ChatPacket(String ip, String port, String nick) {
+    public ChatPacket(String ip, String port, String nick, String message) {
         this.ip = ip;
         this.port = port;
         this.nick = nick;
+        this.message = message;
     }
 
     public String getIp() {
@@ -28,5 +30,13 @@ public class ChatPacket implements Serializable{
 
     public String getNick() {
         return nick;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }
