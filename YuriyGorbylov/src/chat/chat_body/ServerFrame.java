@@ -49,6 +49,7 @@ public class ServerFrame extends JFrame{
         listPanel.add(bannedUsersList, BorderLayout.EAST);
 
         JButton startButton = new JButton("START");
+        startButton.addActionListener(new StartActionListener());
         JPanel startPanel = new JPanel();
         startPanel.add(startButton);
 

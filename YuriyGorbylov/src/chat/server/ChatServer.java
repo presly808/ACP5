@@ -15,16 +15,17 @@ public class ChatServer{
 
     public final int PORT = 33333;
 
-    public void start() throws IOException {
+    public synchronized void start() throws IOException {
 
         List<ChatConnection> connections = new ArrayList();
+        List<String> users = new ArrayList<>();
         ServerSocket ss = new ServerSocket(PORT);
 
 
         while(true) {
             try {
                 Socket clientSocket = ss.accept();
-                ChatConnection connection = new ChatConnection(clientSocket, connections);
+                ChatConnection connection = new ChatConnection(clientSocket, connections, users);
                 connections.add(connection);
                 new Thread(connection).start();
             } catch (IOException e) {

@@ -1,11 +1,12 @@
 package chat.server;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by yuriy.gorbylev on 10.02.2015.
  */
-public class ServerPacket {
+public class ServerPacket implements Serializable{
 
     private String message;
     private List<String> list;
