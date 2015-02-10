@@ -2,10 +2,7 @@ package chat.server;
 
 import chat.client.ChatPacket;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectInputStream;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -18,13 +15,16 @@ import java.util.Scanner;
 public class ChatConnection implements Runnable {
 
     private Socket clientSocket;
-    private PrintWriter out;
+    private ObjectOutputStream out;
     private Scanner in;
+    private ServerPacket serverPacket;
+    private List<String> users;
     private List<ChatConnection> connections;
 
-    public ChatConnection(Socket clientSocket, List connections) {
+    public ChatConnection(Socket clientSocket, List<ChatConnection> connections, List<String> users) {
         this.clientSocket = clientSocket;
         this.connections = connections;
+        this.users = users;
     }
 
     @Override
@@ -37,9 +37,12 @@ public class ChatConnection implements Runnable {
             String connectingMessage = date.format(new Date()) + packet.getNick() + ". IP: " +
                     clientSocket.getInetAddress().getHostAddress() + ". Has just connected.";
             System.out.println(connectingMessage);
-            out = new PrintWriter(clientSocket.getOutputStream());
+            users.add(packet.getNick());
+
+            out = new ObjectOutputStream(clientSocket.getOutputStream());
+            serverPacket = new ServerPacket(connectingMessage, users);
             for (ChatConnection connection : connections){              // Отправялю всем соединениям то, что получил сервер
-                connection.out.println(connectingMessage);
+                connection.out.writeObject(serverPacket);
                 connection.out.flush();
             }
 
@@ -48,12 +51,10 @@ public class ChatConnection implements Runnable {
                 String message = in.nextLine();
                 System.out.println(message);
                 for (ChatConnection connection : connections){              // Отправялю всем соединениям то, что получил сервер
-                    connection.out.println(message);
+                    connection.out.writeObject(serverPacket);
                     connection.out.flush();
                 }
             }
-
-
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
