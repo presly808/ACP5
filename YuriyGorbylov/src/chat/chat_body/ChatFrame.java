@@ -41,7 +41,6 @@ public class ChatFrame extends JFrame {
         setResizable(false);
         init();
         connectToServer();
-
     }
 
     private void init(){
