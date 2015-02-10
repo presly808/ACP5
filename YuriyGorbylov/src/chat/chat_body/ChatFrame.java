@@ -58,6 +58,7 @@ public class ChatFrame extends JFrame {
         /* OUTPUT TEXT AREA */
         outputTextArea = doTextArea(500, 50);
         JScrollPane outputScroll = doScrollPane(outputTextArea);
+        outputScroll.addKeyListener(new SendTextKeyListener());
 
         /* SEND BUTTON */
         sendButton = new JButton("Send");
@@ -158,7 +159,7 @@ public class ChatFrame extends JFrame {
         }
     }
 
-    private class SendTextActionListener extends KeyAdapter{
+    private class SendTextKeyListener extends KeyAdapter{
         @Override
         public void keyPressed(KeyEvent e) {
             final int KEY_ENTER = 10;

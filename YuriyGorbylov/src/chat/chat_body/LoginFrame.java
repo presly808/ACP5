@@ -32,10 +32,10 @@ public class LoginFrame extends JFrame{
     public LoginFrame(String title) throws HeadlessException {
         super(title);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setVisible(true);
         setSize(400, 200);
         setResizable(false);
         init();
+        setVisible(true);
 
     }
 
