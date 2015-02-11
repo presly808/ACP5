@@ -9,6 +9,7 @@ import chat.server.ServerPacket;
 import javax.swing.*;
 import java.io.*;
 import java.net.Socket;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -54,6 +55,7 @@ public class ChatClient {
                     ServerPacket serverPacket = (ServerPacket) in.readObject();
                     inputTextArea.append(serverPacket.getMessage() + "\n");
                     List<String> list = serverPacket.getList();
+                    System.out.println(Arrays.toString(list.toArray()));
                     userList.setListData(list.toArray());
                 }
             } catch (IOException e) {
