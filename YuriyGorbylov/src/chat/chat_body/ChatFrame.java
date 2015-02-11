@@ -137,8 +137,8 @@ public class ChatFrame extends JFrame {
     private void connectToServer(){
         try {
             chatClient = new ChatClient(chatPacket, inputTextArea, userList);
-            chatClient.readMessages();
             chatClient.sendMessage("hello");
+            chatClient.readMessages();
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Fail connection to the server", "Input error", JOptionPane.ERROR_MESSAGE);
             this.dispose();

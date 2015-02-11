@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -15,17 +16,17 @@ public class ChatServer{
 
     public final int PORT = 33333;
 
-    public synchronized void start() throws IOException {
+    public void start() throws IOException {
 
         List<ChatConnection> connections = new ArrayList();
         List<String> users = new ArrayList();
+        List<String> synhUsers = Collections.synchronizedList(users);
         ServerSocket ss = new ServerSocket(PORT);
-
 
         while(true) {
             try {
                 Socket clientSocket = ss.accept();
-                ChatConnection connection = new ChatConnection(clientSocket, connections, users);
+                ChatConnection connection = new ChatConnection(clientSocket, connections, synhUsers);
                 connections.add(connection);
                 new Thread(connection).start();
             } catch (IOException e) {

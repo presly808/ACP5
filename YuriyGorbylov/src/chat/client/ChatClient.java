@@ -27,12 +27,12 @@ public class ChatClient {
         this.userList = userList;
         this.socket = new Socket(chatPacket.getIp(), Integer.valueOf(chatPacket.getPort()));
         out = new ObjectOutputStream(socket.getOutputStream());
+        out.flush();
     }
 
     public void sendMessage(String message) throws IOException {
-
-        chatPacket.setMessage(message);
-        out.writeObject(chatPacket);
+        ChatPacket messagePacket = new ChatPacket(null, null, this.chatPacket.getNick(), message);
+        out.writeObject(messagePacket);
         out.flush();
     }
 

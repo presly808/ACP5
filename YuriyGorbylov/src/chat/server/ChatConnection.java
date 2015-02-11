@@ -17,7 +17,6 @@ public class ChatConnection implements Runnable {
     private Socket clientSocket;
     private ObjectOutputStream out;
     private ObjectInputStream in;
-    private ServerPacket serverPacket;
     private ChatPacket chatPacket;
     private List<String> users;
     private List<ChatConnection> connections;
@@ -34,8 +33,8 @@ public class ChatConnection implements Runnable {
     public void run() {
 
         try {
-            in = new ObjectInputStream(clientSocket.getInputStream());
             out = new ObjectOutputStream(clientSocket.getOutputStream());
+            in = new ObjectInputStream(clientSocket.getInputStream());
 
             while(true){
                 chatPacket = (ChatPacket) in.readObject();
@@ -43,15 +42,15 @@ public class ChatConnection implements Runnable {
                 if (isConnectingMessage){
                     SimpleDateFormat date = new SimpleDateFormat("HH:mm:ss: ");
                     message = date.format(new Date()) + chatPacket.getNick() + ". IP: " +
-                            clientSocket.getInetAddress().getHostAddress() + ". Has just connected." + chatPacket.getMessage();
+                            clientSocket.getInetAddress().getHostAddress() + ". Has just connected.";
                     isConnectingMessage = false;
+                    users.add(chatPacket.getNick());
                 }else{
-                    message = chatPacket.getMessage();
+                    message = chatPacket.getNick() + ": " + chatPacket.getMessage();
                 }
 
                 System.out.println(message);
-                users.add(chatPacket.getNick());
-                serverPacket = new ServerPacket(message, users);
+                ServerPacket serverPacket = new ServerPacket(message, users);
                 for (ChatConnection connection : connections){
                     connection.out.writeObject(serverPacket);
                     connection.out.flush();
