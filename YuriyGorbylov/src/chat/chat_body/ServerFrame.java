@@ -16,11 +16,14 @@ import java.io.IOException;
  */
 public class ServerFrame extends JFrame{
 
-    public static final int WIDTH = 600;
-    public static final int HEIGHT = 400;
-    private int port;
+    public final int WIDTH = 600;
+    public final int HEIGHT = 400;
     private final Color BACKGROUND_COLOR = new Color(245,255,240);
     private final Border BORDER = new EtchedBorder(EtchedBorder.RAISED);
+    private int port;
+    private JButton startButton;
+    private boolean isStartPressed = false;
+
 
     public ServerFrame(String title, int port) throws HeadlessException {
         super(title);
@@ -75,13 +78,16 @@ public class ServerFrame extends JFrame{
     private class StartActionListener implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent e) {
-            try {
-                ChatServer chatServer = new ChatServer();
+            isStartPressed = !isStartPressed;
+            ChatServer chatServer = new ChatServer(port);
+            if (isStartPressed){
+                startButton.setText("Stop");
                 chatServer.start();
-            } catch (IOException e1) {
-                System.out.println("SERVER DOES NOT WORK");
-                e1.printStackTrace();
+            } else{
+                startButton.setText("Start");
+                chatServer.stopServer();
             }
+
         }
     }
 }

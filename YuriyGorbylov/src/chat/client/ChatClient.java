@@ -8,6 +8,7 @@ import chat.server.ServerPacket;
 
 import javax.swing.*;
 import java.io.*;
+import java.net.ConnectException;
 import java.net.Socket;
 import java.util.Arrays;
 import java.util.List;
@@ -27,6 +28,7 @@ public class ChatClient {
         this.inputTextArea = inputTextArea;
         this.userList = userList;
         this.socket = new Socket(chatPacket.getIp(), Integer.valueOf(chatPacket.getPort()));
+
         out = new ObjectOutputStream(socket.getOutputStream());
         out.flush();
     }

@@ -9,34 +9,44 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
  * Created by yuriy.gorbylev on 02.02.2015.
  */
-public class ChatServer{
+public class ChatServer extends Thread{
 
-    public final int PORT = 33333;
+    private ServerSocket ss;
     private List<ChatConnection> syncConnections = Collections.synchronizedList(new ArrayList());
     private List<String> syncUsers = Collections.synchronizedList(new ArrayList());
+    private int port;
 
+    public ChatServer(int port) {
+        this.port = port;
+    }
 
+    @Override
+    public void run() {
 
-    public void start() throws IOException {
+        try {
+            ServerSocket ss = new ServerSocket(port);
+            while(true) {
 
-        ServerSocket ss = new ServerSocket(PORT);
-        while(true) {
-            try {
-                Socket clientSocket = ss.accept();
-                ChatConnection chatConnection = new ChatConnection(clientSocket);
-                syncConnections.add(chatConnection);
-                new Thread(chatConnection).start();
-            } catch (IOException e) {
-                System.out.println("SERVER DOES NOT WORK");
-                e.printStackTrace();
+                    Socket clientSocket = ss.accept();
+                    ChatConnection chatConnection = new ChatConnection(clientSocket);
+                    syncConnections.add(chatConnection);
+                    new Thread(chatConnection).start();
             }
+        } catch (IOException e) {
+            System.out.println("SERVER DOES NOT WORK");
+            e.printStackTrace();
         }
+    }
+
+    public void stopServer(){
+
     }
 
 
