@@ -19,6 +19,8 @@ import java.net.ConnectException;
 public class LoginFrame extends JFrame{
 
     private final Font FONT = new Font("Calibri", Font.BOLD, 20);
+    public final int WIDTH = 400;
+    public final int HEIGHT = 200;
 
     private JTextField ipTextField;
     private JTextField portTextField;
@@ -30,9 +32,11 @@ public class LoginFrame extends JFrame{
     public LoginFrame(String title) throws HeadlessException {
         super(title);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setSize(400, 200);
+        setSize(WIDTH, HEIGHT);
         setResizable(false);
         init();
+        Dimension screenCenter = SwingUtils.getScreenCenterSize(WIDTH, HEIGHT);
+        setBounds(screenCenter.width, screenCenter.height, WIDTH, HEIGHT);
         setVisible(true);
 
     }
@@ -141,11 +145,11 @@ public class LoginFrame extends JFrame{
             boolean portValid = new PortValidator().validate(portTextField.getText());
             boolean nickValid = new NickValidator().validate(nickTextField.getText());
             if (!ipValid){
-                JOptionPane.showMessageDialog(null, "Wrong IP address.", "Input error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Wrong IP address!", "Input error", JOptionPane.ERROR_MESSAGE);
             } else if (!portValid){
-                JOptionPane.showMessageDialog(null, "Wrong PORT.", "Input error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Wrong PORT!", "Input error", JOptionPane.ERROR_MESSAGE);
             } else if (!nickValid){
-                JOptionPane.showMessageDialog(null, "Wrong nick name", "Input error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Wrong nick name!", "Input error", JOptionPane.ERROR_MESSAGE);
             } else{
                 ChatProperties.storeProperties(ipTextField.getText(), portTextField.getText(), nickTextField.getText());
                 ChatPacket chatPacket = new ChatPacket(ipTextField.getText(), portTextField.getText(), nickTextField.getText(), null);
@@ -159,9 +163,14 @@ public class LoginFrame extends JFrame{
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            boolean portValid = new PortValidator().validate(serverPortTextField.getText());
+            if (portValid){
+                setVisible(false);
+                new ServerFrame("Chat Server", Integer.valueOf(serverPortTextField.getText()));
+            } else{
+                JOptionPane.showMessageDialog(null, "Wrong PORT!", "Input error", JOptionPane.ERROR_MESSAGE);
+            }
 
-            setVisible(false);
-            new ServerFrame("Chat", Integer.valueOf(portTextField.getText()));
         }
     }
 

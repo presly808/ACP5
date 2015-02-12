@@ -21,6 +21,8 @@ import java.util.Properties;
  */
 public class ChatFrame extends JFrame {
 
+    public final int WIDTH = 700;
+    public final int HEIGHT = 500;
     private final Color BACKGROUND_COLOR = new Color(245,255,240);
     private final Border BORDER = new EtchedBorder(EtchedBorder.RAISED);
 
@@ -28,18 +30,22 @@ public class ChatFrame extends JFrame {
     private JTextArea inputTextArea;
     private JTextArea outputTextArea;
     private JButton sendButton;
+
     private ChatClient chatClient;
     private ChatPacket chatPacket;
 
-    PrintWriter pw;
+    private PrintWriter pw;
+
 
     public ChatFrame(String title, ChatPacket chatPacket) throws HeadlessException {
         super(title);
         this.chatPacket = chatPacket;
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setSize(700, 500);
+        setSize(WIDTH, HEIGHT);
         setResizable(false);
         init();
+        Dimension screenCenter = SwingUtils.getScreenCenterSize(WIDTH, HEIGHT);
+        setBounds(screenCenter.width, screenCenter.height, WIDTH, HEIGHT);
         setVisible(true);
         connectToServer();
     }
@@ -49,6 +55,7 @@ public class ChatFrame extends JFrame {
 
         /* INPUT TEXT AREA */
         inputTextArea = doTextArea(600,390);
+        inputTextArea.setText("To exit, type \"/enter\".");
         inputTextArea.setEditable(false);
         JScrollPane inputTextAreaScroll = doScrollPane(inputTextArea);
 
@@ -59,7 +66,7 @@ public class ChatFrame extends JFrame {
         /* OUTPUT TEXT AREA */
         outputTextArea = doTextArea(500, 50);
         JScrollPane outputScroll = doScrollPane(outputTextArea);
-        outputScroll.addKeyListener(new SendTextKeyListener());
+        outputTextArea.addKeyListener(new SendTextKeyListener());
 
         /* SEND BUTTON */
         sendButton = new JButton("Send");
@@ -162,6 +169,9 @@ public class ChatFrame extends JFrame {
                 String message = outputTextArea.getText();
                 chatClient.sendMessage(message);
                 outputTextArea.setText("");
+                if (message.equals("/exit")){
+                    dispose();
+                }
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
@@ -172,7 +182,8 @@ public class ChatFrame extends JFrame {
 
         @Override
         public void keyPressed(KeyEvent e) {
-            if (e.getKeyCode() == KeyEvent.VK_ENTER){
+            final int KEY_ENTER = 10;
+            if (e.getKeyCode() == KEY_ENTER){
                 try {
                     String message = outputTextArea.getText();
                     chatClient.sendMessage(message);
@@ -184,7 +195,7 @@ public class ChatFrame extends JFrame {
         }
     }
 
-    public class SaveLogsActionListener implements ActionListener{
+    private class SaveLogsActionListener implements ActionListener{
 
         @Override
         public void actionPerformed(ActionEvent e) {
