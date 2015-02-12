@@ -8,10 +8,7 @@ import javax.swing.border.*;
 import javax.swing.filechooser.*;
 import javax.swing.filechooser.FileFilter;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 import java.io.*;
 import java.net.ConnectException;
 import java.util.Properties;
@@ -28,7 +25,7 @@ public class ChatFrame extends JFrame {
 
     private JList userList;
     private JTextArea inputTextArea;
-    private JTextArea outputTextArea;
+    private JTextField outputTextArea;
     private JButton sendButton;
 
     private ChatClient chatClient;
@@ -40,9 +37,10 @@ public class ChatFrame extends JFrame {
     public ChatFrame(String title, ChatPacket chatPacket) throws HeadlessException {
         super(title);
         this.chatPacket = chatPacket;
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setSize(WIDTH, HEIGHT);
         setResizable(false);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        this.addWindowListener(new WindowCloseListener());
         init();
         Dimension screenCenter = SwingUtils.getScreenCenterSize(WIDTH, HEIGHT);
         setBounds(screenCenter.width, screenCenter.height, WIDTH, HEIGHT);
@@ -54,8 +52,10 @@ public class ChatFrame extends JFrame {
 
 
         /* INPUT TEXT AREA */
-        inputTextArea = doTextArea(600,390);
-        inputTextArea.setText("To exit, type \"/enter\".");
+        inputTextArea = doTextArea(600, 390);
+        inputTextArea.setText("Type \"/enter\" to exit the chat.\n");
+        inputTextArea.setLineWrap(true);
+        inputTextArea.setWrapStyleWord(true);
         inputTextArea.setEditable(false);
         JScrollPane inputTextAreaScroll = doScrollPane(inputTextArea);
 
@@ -64,8 +64,7 @@ public class ChatFrame extends JFrame {
         JScrollPane userListScroll = doScrollPane(userList);
 
         /* OUTPUT TEXT AREA */
-        outputTextArea = doTextArea(500, 50);
-        JScrollPane outputScroll = doScrollPane(outputTextArea);
+        outputTextArea = doTextField(500, 50);
         outputTextArea.addKeyListener(new SendTextKeyListener());
 
         /* SEND BUTTON */
@@ -79,14 +78,23 @@ public class ChatFrame extends JFrame {
         JButton clearButton = doSettingButton(new ImageIcon("YuriyGorbylov\\src\\chat\\icons\\clear.png"));
         clearButton.addActionListener(new ClearActionListener());
 
+        JButton historyButton = doSettingButton(new ImageIcon("YuriyGorbylov\\src\\chat\\icons\\history.png"));
+        historyButton.addActionListener(new HistoryButtonActionListener());
+
+        JButton exitButton = doSettingButton(new ImageIcon("YuriyGorbylov\\src\\chat\\icons\\exit.png"));
+        exitButton.addActionListener(new ExitButtonActionListener() );
+
 
 
         /* PANELS */
         JPanel settingPanel = new JPanel(new GridLayout(13, 1, 0, 3));
         settingPanel.setBackground(BACKGROUND_COLOR);
-        settingPanel.setPreferredSize(new Dimension(25, 390));
+        settingPanel.setBorder(BORDER);
+        settingPanel.setPreferredSize(new Dimension(30, 390));
         settingPanel.add(saveLogsButton);
         settingPanel.add(clearButton);
+        settingPanel.add(historyButton);
+        settingPanel.add(exitButton);
 
         JPanel centerPanel = new JPanel(new BorderLayout(5,5));
         centerPanel.add(inputTextAreaScroll, BorderLayout.CENTER);
@@ -97,19 +105,21 @@ public class ChatFrame extends JFrame {
         userPanel.add(userListScroll);
         userPanel.setBorder(BORDER);
 
-        JPanel sendButtonPanel = new JPanel();
-        sendButtonPanel.add(sendButton);
         JPanel southPanel = new JPanel(new BorderLayout(5,5));
-        southPanel.add(outputScroll, BorderLayout.CENTER);
-        southPanel.add(sendButtonPanel, BorderLayout.EAST);
+        southPanel.setPreferredSize(new Dimension(500, 35));
+        southPanel.setBorder(BORDER);
+        southPanel.add(outputTextArea, BorderLayout.CENTER);
+        southPanel.add(sendButton, BorderLayout.EAST);
 
-        JPanel mainPanel = new JPanel(new BorderLayout(5,5));
+        JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.add(settingPanel, BorderLayout.WEST);
         mainPanel.add(centerPanel, BorderLayout.CENTER);
         mainPanel.add(userPanel, BorderLayout.EAST);
         mainPanel.add(southPanel, BorderLayout.SOUTH);
-        mainPanel.setBorder(new EtchedBorder(EtchedBorder.RAISED));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
+        JMenuBar menuBar = new JMenuBar();
+        setJMenuBar(menuBar);
         getContentPane().add(mainPanel);
     }
 
@@ -128,6 +138,14 @@ public class ChatFrame extends JFrame {
         textArea.setPreferredSize(new Dimension(width, height));
         textArea.setBackground(BACKGROUND_COLOR);
         return textArea;
+    }
+
+    private JTextField doTextField(int width, int height){
+        JTextField textField = new JTextField();
+        textField.setBorder(BORDER);
+        textField.setPreferredSize(new Dimension(width, height));
+        textField.setBackground(BACKGROUND_COLOR);
+        return textField;
     }
 
     private JList doList(int width, int height){
@@ -188,6 +206,9 @@ public class ChatFrame extends JFrame {
                     String message = outputTextArea.getText();
                     chatClient.sendMessage(message);
                     outputTextArea.setText("");
+                    if (message.equals("/exit")){
+                        dispose();
+                    }
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
@@ -201,7 +222,9 @@ public class ChatFrame extends JFrame {
         public void actionPerformed(ActionEvent e) {
             JFileChooser fileChooser = new JFileChooser();
             fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-            fileChooser.setFileFilter(new TxtFileFilter());
+            fileChooser.setAcceptAllFileFilterUsed(false);
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("Text files .txt", "txt");
+            fileChooser.addChoosableFileFilter(filter);
             fileChooser.showSaveDialog(null);
             File chosenFile = fileChooser.getSelectedFile();
             try {
@@ -217,7 +240,7 @@ public class ChatFrame extends JFrame {
         }
     }
 
-    public class ClearActionListener implements ActionListener{
+    private class ClearActionListener implements ActionListener{
 
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -225,17 +248,40 @@ public class ChatFrame extends JFrame {
         }
     }
 
-    private class TxtFileFilter extends FileFilter{
+    private class HistoryButtonActionListener implements ActionListener{
 
         @Override
-        public boolean accept(File f) {
-            String str = f.getName();
-            return str.substring(str.length()-3).equals(".txt") || f.isDirectory();
-        }
-
-        @Override
-        public String getDescription() {
-            return ".txt";
+        public void actionPerformed(ActionEvent e) {
+            try {
+                chatClient.sendMessage("/history");
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
         }
     }
+
+    private class ExitButtonActionListener implements ActionListener{
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            try {
+                chatClient.sendMessage("/exit");
+                dispose();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+        }
+    }
+
+    private class WindowCloseListener extends WindowAdapter{
+        @Override
+        public void windowClosing(WindowEvent e) {
+            try {
+                chatClient.sendMessage("/exit");
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+        }
+    }
+
 }

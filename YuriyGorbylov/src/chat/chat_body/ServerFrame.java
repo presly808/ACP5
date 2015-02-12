@@ -78,7 +78,6 @@ public class ServerFrame extends JFrame{
 
         /* South Panel */
         JPanel southPanel = new JPanel(new GridLayout(1, 3, 5, 0));
-        JPanel separatorPanel = new JPanel(new BorderLayout());
         southPanel.add(numberPanel);
         southPanel.add(startButton);
 

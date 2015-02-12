@@ -59,7 +59,6 @@ public class ChatClient {
                     ServerPacket serverPacket = (ServerPacket) in.readObject();
                     inputTextArea.append(serverPacket.getMessage() + "\n");
                     List<String> list = serverPacket.getList();
-                    System.out.println(Arrays.toString(list.toArray()));
                     userList.setListData(list.toArray());
                 }
             } catch (IOException e) {

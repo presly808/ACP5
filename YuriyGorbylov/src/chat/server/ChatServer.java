@@ -23,8 +23,8 @@ public class ChatServer extends Thread{
     private List<String> syncUsers = Collections.synchronizedList(new ArrayList());
     private int port;
     private int maxUsers;
-    private int userCounter = 0;
     private JList serverUserList;
+    private String history = "";
 
     public ChatServer(int port, int maxUsers, JList serverUserList) {
         this.port = port;
@@ -39,10 +39,9 @@ public class ChatServer extends Thread{
             ss = new ServerSocket(port);
             while(true) {
                 Socket clientSocket = ss.accept();
-                    if (userCounter < maxUsers){
+                    if (syncUsers.size() < maxUsers){
                         ChatConnection chatConnection = new ChatConnection(clientSocket);
                         syncConnections.add(chatConnection);
-                        userCounter++;
                         new Thread(chatConnection).start();
                     } else{
                         System.out.println("Too many users!");
@@ -95,28 +94,38 @@ public class ChatServer extends Thread{
                         isConnectingMessage = false;
                         syncUsers.add(chatPacket.getNick());
                     }else{
-                        message = chatPacket.getNick() + ": " + chatPacket.getMessage();
+                        message = date.format(new Date()) + chatPacket.getNick() + ": " + chatPacket.getMessage();
                     }
 
-                    System.out.println(message);
                     if (chatPacket.getMessage().equals("/exit")){
-                        message = date.format(new Date()) + chatPacket.getNick() + ". Has just LEFT.";
+                        message = date.format(new Date()) + chatPacket.getNick() + " has LEFT.";
                         syncUsers.remove(chatPacket.getNick());
+                        history += message + "\n";
                         serverPacket = new ServerPacket(message, syncUsers);
                         for (ChatConnection connection : syncConnections){
                             connection.out.writeObject(serverPacket);
                             connection.out.flush();
                             serverUserList.setListData(syncUsers.toArray());
                         }
+                        Thread.currentThread().interrupt();
                         break;
-                    } else{
-                        //Thread.currentThread().interrupt();
+
+                    } else if(chatPacket.getMessage().equals("/history")){
+                        message = "*************HISTORY******************\n" + history +
+                                  "**************************************";
+                        serverPacket = new ServerPacket(message, syncUsers);
+                        out.writeObject(serverPacket);
+                        out.flush();
+                        serverUserList.setListData(syncUsers.toArray());
+                    } else {
+
                         serverPacket = new ServerPacket(message, syncUsers);
                         for (ChatConnection connection : syncConnections){
                             connection.out.writeObject(serverPacket);
                             connection.out.flush();
                             serverUserList.setListData(syncUsers.toArray());
                         }
+                        history += message + "\n";
                     }
                 }
             } catch (IOException e) {
