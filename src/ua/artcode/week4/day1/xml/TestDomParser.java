@@ -1,9 +1,6 @@
 package ua.artcode.week4.day1.xml;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -25,17 +22,12 @@ public class TestDomParser {
         Document document = documentBuilder.parse(new File(PATHNAME));
         Element root = document.getDocumentElement();
 
-        System.out.printf("<%s>\n", root.getTagName());
-        NodeList nodeList = root.getChildNodes();
-        for (int i = 0; i < nodeList.getLength(); i++) {
-            Node node = nodeList.item(i);
-            if(node.getNodeType() == Node.ELEMENT_NODE){
-                Element element = (Element) node;
-                String id = element.getAttribute("id");
-                System.out.printf("<%s id=%s>\n", element.getTagName(), id);
-            }
-        }
-        System.out.printf("</%s>", root.getTagName());
+        String res = DomParsingUtils.showInfo(root);
+        System.out.println(res);
+
 
     }
+
+
+
 }
