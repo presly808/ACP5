@@ -1,7 +1,7 @@
 package chat.chat_body;
 
 import chat.client.ChatPacket;
-import chat.server.ChatServer;
+import chat.properties.ChatProperties;
 import chat.validators.IPValidator;
 import chat.validators.NickValidator;
 import chat.validators.PortValidator;
@@ -9,12 +9,9 @@ import chat.validators.PortValidator;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.io.IOException;
-import java.net.ServerSocket;
+import java.awt.event.*;
+import java.net.ConnectException;
+
 
 /**
  * Created by yuriy.gorbylev on 04.02.2015.
@@ -26,16 +23,17 @@ public class LoginFrame extends JFrame{
     private JTextField ipTextField;
     private JTextField portTextField;
     private JTextField nickTextField;
+    private JTextField serverPortTextField;
     private JLabel serverTextLabel;
     private JButton startButton;
 
     public LoginFrame(String title) throws HeadlessException {
         super(title);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setVisible(true);
         setSize(400, 200);
         setResizable(false);
         init();
+        setVisible(true);
 
     }
 
@@ -64,11 +62,11 @@ public class LoginFrame extends JFrame{
         clientTextPanel.add(portLabel);
         clientTextPanel.add(nickLabel);
 
-        ipTextField = new JTextField("localhost");
+        ipTextField = new JTextField(ChatProperties.loadIP());
         ipTextField.setHorizontalAlignment(SwingConstants.CENTER);
-        portTextField = new JTextField("33333");
+        portTextField = new JTextField(ChatProperties.loadPort());
         portTextField.setHorizontalAlignment(SwingConstants.CENTER);
-        nickTextField = new JTextField("Yura");
+        nickTextField = new JTextField(ChatProperties.loadNick());
         nickTextField.setHorizontalAlignment(SwingConstants.CENTER);
         clientTextPanel.add(ipTextField);
         clientTextPanel.add(portTextField);
@@ -93,15 +91,29 @@ public class LoginFrame extends JFrame{
         /* SERVER PANEL PART */
 
         serverTextLabel = doLabel("Press \"Start\" to start the server.");
-        JLabel serverPortLabel = doLabel("Port = 33333");
+
+        serverPortTextField = new JTextField("Input server's port");
+        serverPortTextField.setFont(new Font("Calibri", Font.ITALIC, 14));
+        serverPortTextField.setDisabledTextColor(Color.LIGHT_GRAY);
+        serverPortTextField.setPreferredSize(new Dimension(100, 10));
+        serverPortTextField.setHorizontalAlignment(SwingConstants.CENTER);
+        serverPortTextField.addMouseListener(new PortTextFieldMouseListener());
+
+        JPanel portTextFieldPanel = new JPanel(new GridLayout(1,3));
+        portTextFieldPanel.add(new Label());
+        portTextFieldPanel.add(serverPortTextField);
+        portTextFieldPanel.add(new Label());
+
 
         JButton serverStartButton = new JButton("Start");
         serverStartButton.addActionListener(new StartServerButtonActionListener());
+        JPanel startButtonPanel = new JPanel();
+        startButtonPanel.add(serverStartButton);
 
         JPanel serverPanel = new JPanel(new GridLayout(3,1,5,5));
         serverPanel.add(serverTextLabel);
-        serverPanel.add(serverPortLabel);
-        serverPanel.add(serverStartButton);
+        serverPanel.add(portTextFieldPanel);
+        serverPanel.add(startButtonPanel);
 
 
         /* Tabbed Pane */
@@ -135,7 +147,8 @@ public class LoginFrame extends JFrame{
             } else if (!nickValid){
                 JOptionPane.showMessageDialog(null, "Wrong nick name", "Input error", JOptionPane.ERROR_MESSAGE);
             } else{
-                ChatPacket chatPacket = new ChatPacket(ipTextField.getText(), portTextField.getText(), nickTextField.getText());
+                ChatProperties.storeProperties(ipTextField.getText(), portTextField.getText(), nickTextField.getText());
+                ChatPacket chatPacket = new ChatPacket(ipTextField.getText(), portTextField.getText(), nickTextField.getText(), null);
                 setVisible(false);
                 new ChatFrame("Chat", chatPacket);
             }
@@ -146,14 +159,16 @@ public class LoginFrame extends JFrame{
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            serverTextLabel.setText("The server has been started.");
-            try {
-                ChatServer chatServer = new ChatServer();
-                chatServer.start();
-            } catch (IOException e1) {
-                System.out.println("SERVER DOES NOT WORK");
-                e1.printStackTrace();
-            }
+
+            setVisible(false);
+            new ServerFrame("Chat", Integer.valueOf(portTextField.getText()));
+        }
+    }
+
+    private class PortTextFieldMouseListener extends MouseAdapter{
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            serverPortTextField.setText("");
         }
     }
 }

@@ -13,6 +13,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.*;
+import java.net.ConnectException;
 import java.util.Properties;
 
 /**
@@ -36,12 +37,11 @@ public class ChatFrame extends JFrame {
         super(title);
         this.chatPacket = chatPacket;
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setVisible(true);
-        setSize(800, 500);
+        setSize(700, 500);
         setResizable(false);
         init();
+        setVisible(true);
         connectToServer();
-
     }
 
     private void init(){
@@ -53,12 +53,13 @@ public class ChatFrame extends JFrame {
         JScrollPane inputTextAreaScroll = doScrollPane(inputTextArea);
 
         /* USER LIST */
-        userList = doList(200, 390);
+        userList = doList(150, 390);
         JScrollPane userListScroll = doScrollPane(userList);
 
         /* OUTPUT TEXT AREA */
         outputTextArea = doTextArea(500, 50);
         JScrollPane outputScroll = doScrollPane(outputTextArea);
+        outputScroll.addKeyListener(new SendTextKeyListener());
 
         /* SEND BUTTON */
         sendButton = new JButton("Send");
@@ -82,8 +83,12 @@ public class ChatFrame extends JFrame {
 
         JPanel centerPanel = new JPanel(new BorderLayout(5,5));
         centerPanel.add(inputTextAreaScroll, BorderLayout.CENTER);
-        centerPanel.add(userListScroll, BorderLayout.EAST);
         centerPanel.setBorder(BORDER);
+
+        JPanel userPanel = new JPanel(new BorderLayout(5,5));
+        userPanel.setPreferredSize(new Dimension(150, 390));
+        userPanel.add(userListScroll);
+        userPanel.setBorder(BORDER);
 
         JPanel sendButtonPanel = new JPanel();
         sendButtonPanel.add(sendButton);
@@ -91,10 +96,10 @@ public class ChatFrame extends JFrame {
         southPanel.add(outputScroll, BorderLayout.CENTER);
         southPanel.add(sendButtonPanel, BorderLayout.EAST);
 
-        setLayout(new BorderLayout(5, 5));
         JPanel mainPanel = new JPanel(new BorderLayout(5,5));
         mainPanel.add(settingPanel, BorderLayout.WEST);
         mainPanel.add(centerPanel, BorderLayout.CENTER);
+        mainPanel.add(userPanel, BorderLayout.EAST);
         mainPanel.add(southPanel, BorderLayout.SOUTH);
         mainPanel.setBorder(new EtchedBorder(EtchedBorder.RAISED));
 
@@ -136,9 +141,13 @@ public class ChatFrame extends JFrame {
 
     private void connectToServer(){
         try {
-            chatClient = new ChatClient(chatPacket, inputTextArea, outputTextArea);
+            chatClient = new ChatClient(chatPacket, inputTextArea, userList);
+            chatClient.sendMessage("hello");
             chatClient.readMessages();
         } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Fail connection to the server", "Input error", JOptionPane.ERROR_MESSAGE);
+            this.dispose();
+            new LoginFrame("WELCOME!");
             e.printStackTrace();
         }
     }
@@ -159,11 +168,11 @@ public class ChatFrame extends JFrame {
         }
     }
 
-    private class SendTextActionListener extends KeyAdapter{
+    private class SendTextKeyListener extends KeyAdapter{
+
         @Override
         public void keyPressed(KeyEvent e) {
-            final int KEY_ENTER = 10;
-            if (e.getKeyCode() == KEY_ENTER){
+            if (e.getKeyCode() == KeyEvent.VK_ENTER){
                 try {
                     String message = outputTextArea.getText();
                     chatClient.sendMessage(message);
