@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<users>
+    <user id="1">
+        <name>Valera</name>
+        <id>1</id>
+        <age>23</age>
+    </user>
+    <user id="2">
+        <name>Vasichka</name>
+        <id>2</id>
+        <age>31</age>
+    </user>
+</users>
