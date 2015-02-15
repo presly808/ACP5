@@ -1,0 +1,41 @@
+1. java.io.*;
+      InputStream, OutputStream
+      Reader, Reader
+
+      design patterns Decorator, Adapter
+
+    protocols IP, UDP, TCP
+
+    classes (Socket, ServerSocket)
+
+
+1. Write classes that will save object(primitive fields or String) into file using
+    a) Default Java Serialization (ObjectOutputStream, ObjectInputStream) http://www.tutorialspoint.com/java/java_serialization.htm
+    b) Reflection
+        file example
+
+            ua.artcode.week1.Employee
+            name=Andriy
+            salary=2000
+            age=25
+
+    .For reading from file use Scanner and for write - PrintWriter
+
+    * Add possibility to save and load several objects(Collection)
+    * Hierarchy saving and loading
+
+
+2. Write own implementation of Scanner (based on Decorator pattern)
+   -String next()
+   -int nextInt()
+   -String nextLine()
+   -boolean hasNext()
+   -boolean hasNextInt()
+   -useDelemiter(String)
+   -close()
+
+3. Write class Timer, that performs some action in defined period of time
+   - start(long delay, Action action) // Action is your own interface with one method, for ex. see ActionListener inteface
+   - stop()
+
+4. Write synchronous chat between two machines (use ServerSocket and Socket)

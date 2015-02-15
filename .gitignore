@@ -1,0 +1,11 @@
+#IDEA files
+*.iml
+.idea/
+
+#Java bin
+*.class
+*.project
+*.classpath
+
+#files
+
