@@ -15,6 +15,8 @@ public class WorkerUser implements IUser, Runnable {
     private Socket userSocket;
     private IServer server;
     private String ip;
+    private ObjectInputStream input;
+    private ObjectOutputStream output;
 
     public WorkerUser(Socket userSocket, IServer server, String ip) {
         this.userSocket = userSocket;
@@ -24,18 +26,23 @@ public class WorkerUser implements IUser, Runnable {
 
     @Override
     public void sendMessageToClient(Message message) {
-
+        try {
+            output.writeObject(message);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void run() {
         try {
-            ObjectInputStream input = new ObjectInputStream(userSocket.getInputStream()); // входящие сообщения
-            ObjectOutputStream output = new ObjectOutputStream(userSocket.getOutputStream()); // исходящие сообщения
+            input = new ObjectInputStream(userSocket.getInputStream()); // входящие сообщения
+            output = new ObjectOutputStream(userSocket.getOutputStream()); // исходящие сообщения
             Message message;
             while(!Thread.currentThread().isInterrupted()){
                 message = (Message) input.readObject();
-                output.writeObject(message);
+                message.setUserName(message.getUserName() + "@[" + ip + "]");
+                server.notifyUsers(message);
                 Thread.sleep(500);
             }
 
