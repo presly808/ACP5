@@ -47,7 +47,7 @@ public class TestJsoup {
             "</track>\n" +
             "</trackList>\n" +
             "</playlist>";
-    
+
     public static final String PATHNAME = "dmartyuk/tmp/testJsoup.xml";
 
     public static void main(String[] args) throws IOException, ParserConfigurationException, SAXException {
