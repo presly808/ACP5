@@ -21,11 +21,12 @@ public class UrlDownloader {
 
     public static void download(String url, String dest, boolean showContent) {
         InputStream is = null;
-        try(FileOutputStream fos = new FileOutputStream(dest)){
+        try{
+            FileOutputStream fos = new FileOutputStream(dest);
             URL urlPath = new URL(url);
             is = urlPath.openStream();
 
-            byte[] buff = new byte[10_000];
+            byte[] buff = new byte[10000];
             int length = 0;
             while((length = is.read(buff)) != -1){
                 if(showContent){

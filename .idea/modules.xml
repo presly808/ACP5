@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/ACP5.iml" filepath="$PROJECT_DIR$/ACP5.iml" />
+      <module fileurl="file://$PROJECT_DIR$/BilobrovSerhii/BilobrovSerhii.iml" filepath="$PROJECT_DIR$/BilobrovSerhii/BilobrovSerhii.iml" />
+      <module fileurl="file://$PROJECT_DIR$/PrevedMedved/PrevedMedved.iml" filepath="$PROJECT_DIR$/PrevedMedved/PrevedMedved.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ScherbakovDima/ScherbakovDima.iml" filepath="$PROJECT_DIR$/ScherbakovDima/ScherbakovDima.iml" />
+      <module fileurl="file://$PROJECT_DIR$/YuriyGorbylov/YuriyGorbylov.iml" filepath="$PROJECT_DIR$/YuriyGorbylov/YuriyGorbylov.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dmartyuk/dmartyuk.iml" filepath="$PROJECT_DIR$/dmartyuk/dmartyuk.iml" />
+      <module fileurl="file://$PROJECT_DIR$/otiupa/otiupa.iml" filepath="$PROJECT_DIR$/otiupa/otiupa.iml" />
+    </modules>
+  </component>
+</project>
