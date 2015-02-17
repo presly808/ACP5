@@ -2,6 +2,8 @@
 *.iml
 .idea/
 
+#maven
+target/
 
 #Java bin
 *.class
