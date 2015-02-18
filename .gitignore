@@ -1,6 +1,7 @@
 #IDEA files
 *.iml
 .idea/
+temp/
 
 #maven
 target/
