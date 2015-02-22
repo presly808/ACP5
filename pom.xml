@@ -6,10 +6,26 @@
     <groupId>ua.artcode</groupId>
     <artifactId>ACP5</artifactId>
     <version>1.0</version>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>BilobrovM</module>
+    </modules>
 
 
     <dependencies>
+
+        <dependency>
+            <groupId>ua.artcode</groupId>
+            <artifactId>ACP5</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.7.2</version>
+        </dependency>
 
         <dependency>
             <groupId>log4j</groupId>
