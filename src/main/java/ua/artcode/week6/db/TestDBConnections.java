@@ -51,16 +51,8 @@ public class TestDBConnections {
         }
 
 
-
-
     }
 
-    public static void showAllDrivers(){
-        Enumeration<Driver> driverEnumeration = DriverManager.getDrivers();
-        while(driverEnumeration.hasMoreElements()){
-            Driver driver = driverEnumeration.nextElement();
-            System.out.println(driver);
-        }
-    }
+
 
 }
