@@ -6,7 +6,7 @@ import ua.artcode.manager.ClientManagerImpl;
 import java.util.Scanner;
 
 /**
- * Created by serhii on 24.02.15.
+ *
  */
 public class MenuConsole {
 
