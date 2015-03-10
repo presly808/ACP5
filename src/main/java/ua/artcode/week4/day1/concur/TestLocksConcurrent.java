@@ -10,7 +10,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class TestLocksConcurrent {
 
     public static void main(String[] args) {
-        DataHolder dh = new DataHolder(0);
+        final DataHolder dh = new DataHolder(0);
 
         for (int i = 0; i < 10; i++) {
             new Thread(new Runnable() {
