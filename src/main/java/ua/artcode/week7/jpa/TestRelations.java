@@ -32,8 +32,10 @@ public class TestRelations {
         entityManager.persist(book2);
         entityManager.getTransaction().commit();
 
+        entityManager.clear();
         Author loaded = entityManager.find(Author.class, author.getId());
         System.out.println(loaded);
+        loaded.getBooks().size();
         deleteAuthor(entityManager, loaded);
 
 

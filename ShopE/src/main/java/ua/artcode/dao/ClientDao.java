@@ -1,5 +1,6 @@
 package ua.artcode.dao;
 
+import ua.artcode.exception.NoUserFoundException;
 import ua.artcode.model.Client;
 
 import java.util.List;
@@ -13,7 +14,7 @@ public interface ClientDao {
 
     public void delete(int id);
 
-    public Client find(String login);
+    public Client find(String login) throws NoUserFoundException;
 
     public void update(Client client);
 

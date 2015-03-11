@@ -1,5 +1,6 @@
 package ua.artcode.view;
 
+import ua.artcode.exception.NoUserFoundException;
 import ua.artcode.manager.ClientManager;
 import ua.artcode.manager.ClientManagerImpl;
 
@@ -38,7 +39,12 @@ public class MenuConsole {
                 String login = scanner.nextLine();
                 System.out.println("Input pass");
                 String pass = scanner.nextLine();
-                String accessKey = clientManager.signIn(login,pass);
+                String accessKey = null;
+                try {
+                    accessKey = clientManager.signIn(login,pass);
+                } catch (NoUserFoundException e) {
+                    System.err.println("No user found with login " + login);
+                }
                 System.out.println(accessKey);
                 break;
             }

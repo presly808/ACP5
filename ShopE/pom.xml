@@ -8,7 +8,11 @@
     <artifactId>EShop</artifactId>
     <version>1.0</version>
 
-
+    <parent>
+        <groupId>ua.artcode</groupId>
+        <artifactId>ACP5</artifactId>
+        <version>1.0</version>
+    </parent>
 
     <dependencies>
         <dependency>
