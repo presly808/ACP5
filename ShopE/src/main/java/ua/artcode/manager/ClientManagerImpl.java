@@ -1,6 +1,8 @@
 package ua.artcode.manager;
 
 import org.hibernate.Hibernate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import ua.artcode.dao.ClientDao;
 import ua.artcode.dao.ClientDaoImpl;
 import ua.artcode.dao.ClientDaoJpaHibernate;
@@ -8,12 +10,11 @@ import ua.artcode.exception.NoUserFoundException;
 import ua.artcode.model.Client;
 import ua.artcode.utils.EntityManagerFactoryHolder;
 
-/**
- * Created by serhii on 24.02.15.
- */
+@Service
 public class ClientManagerImpl implements ClientManager {
 
-    private ClientDao dao = new ClientDaoJpaHibernate(EntityManagerFactoryHolder.getFactory());
+    @Autowired
+    private ClientDao dao;
 
     @Override
     public void register(String login, String pass, String phone, String email) {

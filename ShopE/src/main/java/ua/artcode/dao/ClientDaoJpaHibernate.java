@@ -1,5 +1,8 @@
 package ua.artcode.dao;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import ua.artcode.exception.NoUserFoundException;
 import ua.artcode.model.Client;
 
@@ -7,12 +10,14 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import java.util.List;
 
-/**
- * Created by serhii on 11.03.15.
- */
+@Repository
 public class ClientDaoJpaHibernate implements ClientDao {
 
+    @Autowired
     private EntityManagerFactory entityManagerFactory;
+
+    public ClientDaoJpaHibernate() {
+    }
 
     public ClientDaoJpaHibernate(EntityManagerFactory entityManagerFactory) {
         this.entityManagerFactory = entityManagerFactory;
@@ -54,5 +59,13 @@ public class ClientDaoJpaHibernate implements ClientDao {
     @Override
     public List<Client> findAll() {
         return null;
+    }
+
+    public EntityManagerFactory getEntityManagerFactory() {
+        return entityManagerFactory;
+    }
+
+    public void setEntityManagerFactory(EntityManagerFactory entityManagerFactory) {
+        this.entityManagerFactory = entityManagerFactory;
     }
 }

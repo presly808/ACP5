@@ -1,5 +1,7 @@
 package ua.artcode.view;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import ua.artcode.exception.NoUserFoundException;
 import ua.artcode.manager.ClientManager;
 import ua.artcode.manager.ClientManagerImpl;
@@ -9,9 +11,13 @@ import java.util.Scanner;
 /**
  *
  */
+@Component
 public class MenuConsole {
 
-    private ClientManager clientManager = new ClientManagerImpl();
+    @Autowired
+    private ClientManager clientManager;
+    // ServerConnection conection
+
     private Scanner scanner = new Scanner(System.in);
 
     public void showMenu(){
@@ -55,6 +61,11 @@ public class MenuConsole {
         }
     }
 
+    public ClientManager getClientManager() {
+        return clientManager;
+    }
 
-
+    public void setClientManager(ClientManager clientManager) {
+        this.clientManager = clientManager;
+    }
 }
