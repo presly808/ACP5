@@ -1,20 +1,42 @@
 package ua.artcode.week8.ioc;
 
+import java.io.*;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
-/**
- * Created by serhii on 16.03.15.
- */
+
 public class DependencyInjector {
 
     private Map<String,Object> context;
 
 
     public DependencyInjector(){
+        initContext();
+    }
+
+    private void initContext() {
+        Properties properties = new Properties();
         context = new HashMap<>();
-        context.put("ua.artcode.week8.ioc.IService", new ServiceB());
+        try {
+            /*InputStream resourceAsStream = DependencyInjector.class
+                    .getResourceAsStream("week8/context.properties");*/
+
+
+            properties.load(new FileReader(
+                    "/home/serhii/IdeaProjects/ACP5/src/main/resources/week8/context.properties"));
+            for(String key : properties.stringPropertyNames()){
+                String className = properties.getProperty(key);
+                Class cl = Class.forName(className);
+                Object instance = cl.newInstance();
+                context.put(key, instance);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
     }
 
 

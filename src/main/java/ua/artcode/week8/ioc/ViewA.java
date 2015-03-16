@@ -7,6 +7,7 @@ import java.util.Date;
  */
 public class ViewA {
     // must choose realization
+    @ForInject
     private IService service;
 
     public void useService(){
