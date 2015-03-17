@@ -7,9 +7,18 @@
 
     <!-- bean definitions here -->
 
-    <bean id="serviceA" class="ua.artcode.week8.ioc.ServiceA"/>
+    <bean id="serviceA" class="ua.artcode.week8.ioc.ServiceA" scope="prototype"/>
 
 
+    <bean id="viewA" class="ua.artcode.week8.ioc.ViewA">
+        <property name="count" value="50"/>
+        <property name="desc" value="myView"/>
+        <property name="service" ref="serviceA"/>
+    </bean>
+
+    <bean id="viewB" class="ua.artcode.week8.ioc.ViewA">
+        <constructor-arg name="service" ref="serviceA"/>
+    </bean>
 
 
 </beans>

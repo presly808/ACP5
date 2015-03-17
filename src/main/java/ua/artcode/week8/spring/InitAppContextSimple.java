@@ -19,8 +19,9 @@ public class InitAppContextSimple {
         ApplicationContext app =
                 new ClassPathXmlApplicationContext(configLocation);
 
-        IService service = (IService) app.getBean("serviceB");
-        System.out.println(service.format(new Date()));
+        IService service1 = (IService) app.getBean("serviceA");
+        IService service2 = (IService) app.getBean("serviceA");
+        System.out.println(service1.format(new Date()));
 
     }
 }
