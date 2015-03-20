@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+       <bean id="serviceA" class="ua.artcode.week8.rmi.server.ServerAPiImpl"/>
+
+       <bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+              <property name="serviceName" value="Service"/>
+              <property name="serviceInterface" value="ua.artcode.week8.rmi.common.ServerAPI"/>
+              <property name="service" ref="serviceA"/>
+              <property name="registryPort" value="1199"/>
+       </bean>
+
+</beans>

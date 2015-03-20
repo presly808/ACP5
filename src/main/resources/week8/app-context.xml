@@ -1,13 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="
+       http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <!-- bean definitions here -->
 
-    <bean id="serviceA" class="ua.artcode.week8.ioc.ServiceA" scope="prototype"/>
+    <context:annotation-config/>
+    <context:component-scan base-package="ua.artcode.week8.di.spring"/>
+
+    <bean id="serviceA" class="ua.artcode.week8.ioc.ServiceA"/>
+    <bean id="serviceB" class="ua.artcode.week8.ioc.ServiceB"/>
 
 
     <bean id="viewA" class="ua.artcode.week8.ioc.ViewA">
