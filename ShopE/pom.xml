@@ -5,9 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>ua.artcode</groupId>
-    <artifactId>EShop</artifactId>
+    <artifactId>ShopE</artifactId>
     <version>1.0</version>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
 
     <parent>
         <groupId>ua.artcode</groupId>
@@ -16,6 +16,7 @@
     </parent>
 
     <dependencies>
+
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
