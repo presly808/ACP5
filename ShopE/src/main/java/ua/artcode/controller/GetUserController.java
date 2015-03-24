@@ -12,9 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-/**
- * Created by serhii on 22.03.15.
- */
 public class GetUserController extends HttpServlet {
 
     private ClientManager clientManager;

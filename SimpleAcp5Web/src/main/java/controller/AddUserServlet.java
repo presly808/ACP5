@@ -15,6 +15,7 @@ import java.util.Map;
 @WebServlet(name = "AddUserServlet", value = "/user/add")
 public class AddUserServlet extends HttpServlet {
 
+    public static final String ACP5_HTML_OK_HTML = "/acp5/html/ok.html";
     private Map<Integer,User> users;
 
     @Override
@@ -34,7 +35,7 @@ public class AddUserServlet extends HttpServlet {
 
         users.put(id1, user);
 
-        resp.sendRedirect("/html/ok.html");
+        resp.sendRedirect(ACP5_HTML_OK_HTML);
 
     }
 }

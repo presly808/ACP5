@@ -14,6 +14,7 @@ import java.util.Map;
 @WebServlet(name = "ShowUserServlet", value = "/user/show")
 public class ShowUserServlet extends HttpServlet {
 
+    public static final String PATH = "/WEB-INF/pages/user-info.jsp";
     private Map<Integer,User> users;
 
     @Override
@@ -32,15 +33,15 @@ public class ShowUserServlet extends HttpServlet {
 
         User user = users.get(id);
 
+
+
+
         if(user == null){
             printWriter.println("User not found");
             printWriter.flush();
         } else {
-            printWriter.append("<h1>User</h1><br/>")
-                    .append("Id : ").append(user.getId() + "").append("<br/>")
-                    .append("Name : ").append(user.getName()).append("<br/>")
-                    .append("Age :").append(user.getAge() + "").append("<br/>")
-                    .flush();
+            req.getServletContext().setAttribute("userA", user);
+            req.getRequestDispatcher(PATH).forward(req,resp);
         }
 
     }

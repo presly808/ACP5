@@ -9,9 +9,18 @@ public class User {
 
     private String name;
 
+    private String pass;
+
     private int age;
 
     public User() {
+    }
+
+    public User(int id, String name, String pass, int age) {
+        this.id = id;
+        this.name = name;
+        this.pass = pass;
+        this.age = age;
     }
 
     public User(int id, String name, int age) {
@@ -42,6 +51,14 @@ public class User {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    public String getPass() {
+        return pass;
+    }
+
+    public void setPass(String pass) {
+        this.pass = pass;
     }
 
     @Override
